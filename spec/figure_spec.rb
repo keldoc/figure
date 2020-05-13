@@ -260,4 +260,13 @@ describe Figure do
       FileUtils.rm_f 'spec/fixtures/fixtures'
     }
   end
+
+  describe 'ERB' do
+    describe 'conf' do
+      it 'should be loaded and parsed properly' do
+        expect(described_class.plap.default.plop).to eq 'FOOBAR'
+        expect(described_class.plap.default.plip).to eq 'toto'
+      end
+    end
+  end
 end
