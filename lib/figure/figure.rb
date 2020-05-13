@@ -3,6 +3,18 @@ require 'yaml'
 
 class Figure < Hash
 
+  class Conf < Pathname
+
+    def read
+      erb? ? ERB.new(super).result : super
+    end
+
+    def erb?
+      Figure.erb_support? && extname == '.erb'
+    end
+
+  end
+
   include Singleton
 
   include DepartmentStore
@@ -68,10 +80,10 @@ class Figure < Hash
 
   def config_files
     Dir[ *all_config_directories_globs ].map do |file|
-      path = Pathname.new file
-      name = path.basename.to_s.sub('.yml', '').sub('.figure', '')
+      conf = Conf.new file
+      name = conf.basename.to_s.sub('.yml', '').sub('.figure', '').sub('.erb', '')
 
-      yield name, path if block_given?
+      yield name, conf if block_given?
     end
   end
 
