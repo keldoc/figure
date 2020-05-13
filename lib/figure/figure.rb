@@ -44,6 +44,7 @@ class Figure < Hash
   end
 
   CONFIG_GLOBS = %w|**/*figure.yml **/figure/*.yml **/gaston/*.yml|
+  CONFIG_GLOBS.concat CONFIG_GLOBS.map { |glob| glob + '.erb' } if Figure.erb_support?
 
   def initialize
     self.class.initializers.each &:initialize!
