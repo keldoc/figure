@@ -37,12 +37,12 @@ class Figure < Hash
   end
 end
 
-if defined? Rails
-  Figure.initializers << Figure::RailsInitializer
-end
-
 erb_support = !!defined?(ERB)
 
 Figure.define_singleton_method :erb_support?, ->{ erb_support }
 
 require 'figure/figure'
+
+if defined? Rails
+  Figure.initializers << Figure::RailsInitializer
+end
