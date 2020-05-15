@@ -4,7 +4,7 @@ $:.unshift File.expand_path('../lib', __FILE__)
 require 'figure/version'
 
 Gem::Specification.new do |s|
-  s.name          = "figure"
+  s.name          = "figure-keldoc"
   s.version       = Figure::VERSION
   s.authors       = ["lacravate"]
   s.email         = ["david.elbaz@af83.com"]
