@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'figure/store'
 require 'figure/department_store'
 require 'figure/figurine'
@@ -44,6 +45,4 @@ Figure.define_singleton_method :erb_support?, -> { erb_support }
 
 require 'figure/figure'
 
-if defined? Rails
-  Figure.initializers << Figure::RailsInitializer
-end
+Figure.initializers << Figure::RailsInitializer if defined? Rails

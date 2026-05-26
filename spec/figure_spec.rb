@@ -1,8 +1,8 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Figure do
-
   describe 'method missing' do
     it 'should otherwise respond to method_missing the usual way' do
       expect { described_class.plip }.to raise_error(NoMethodError)
@@ -112,7 +112,6 @@ describe Figure do
       { test: { val: 'test', nested_val: 'nested_test', thingy: 'bloh' },
         development: { val: 'default', nested_val: 'default_nested_val', thingy: nil },
         production: { val: 'default', nested_val: 'nested_production', thingy: 'blah' } }.each do |env, values|
-
         let(:klass) { described_class.clone }
 
         it 'should be able to forward the call to a child' do
@@ -129,7 +128,11 @@ describe Figure do
           it 'should return the right value environment aware' do
             expect(klass.environments.this.env.val).to eq(values[:val])
             expect(klass.environments.that.nested_env.nested_val).to eq(values[:nested_val])
-            expect((klass.environments.that.nested_env.thingy rescue nil)).to eq(values[:thingy])
+            expect(begin
+              klass.environments.that.nested_env.thingy
+            rescue StandardError
+              nil
+            end).to eq(values[:thingy])
             expect(klass.environments.that.nested_env.other_nested_val).to eq('other_default_nested_val')
           end
 
@@ -185,7 +188,8 @@ describe Figure do
         class Rails
           class << self
             attr_accessor :env
-            def root; Pathname.new 'spec'; end
+
+            def root = Pathname.new('spec')
           end
         end
 
@@ -218,7 +222,8 @@ describe Figure do
       class Rails
         class << self
           attr_accessor :env
-          def root; Pathname.new 'spec'; end
+
+          def root = Pathname.new('spec')
         end
       end
 

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Figure < Hash
   module DepartmentStore
     private
@@ -10,7 +11,7 @@ class Figure < Hash
     def store_klass(parent_klass, name)
       label = parent_klass.label.to_s + '::' + name
 
-      Class.new( default_klass(label) || parent_klass ).tap do |klass|
+      Class.new(default_klass(label) || parent_klass).tap do |klass|
         klass.label = label
         Figure.stores[klass.pattern] = klass if klass.default_type
       end

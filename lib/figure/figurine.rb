@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'singleton'
 
 class Figure < Hash
@@ -49,7 +50,7 @@ class Figure < Hash
 
     def find_default(h)
       key = h.keys.detect { |k| k.to_s =~ /^(default|gaston)(_.+)?$/ }
-      forward = $1.to_s == 'gaston' ? 'env' : ($2 && $2[1..-1])
+      forward = ::Regexp.last_match(1).to_s == 'gaston' ? 'env' : (::Regexp.last_match(2) && ::Regexp.last_match(2)[1..-1])
 
       [h.delete(key), forward]
     end

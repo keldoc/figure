@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Figure < Hash
   module Store
     def []=(kls, val)
@@ -19,22 +20,26 @@ class Figure < Hash
     def merge!(hash)
       hash.each do |k, v|
         self[k] = if v.is_a? Hash
-          new_store k, v, self.class
-        elsif v.is_a? Array
-          v.map do |i|
-            i.is_a?(Hash) ? new_store(k, i, self.class) : i
-          end
-        else
-          v
-        end
+                    new_store k, v, self.class
+                  elsif v.is_a? Array
+                    v.map do |i|
+                      i.is_a?(Hash) ? new_store(k, i, self.class) : i
+                    end
+                  else
+                    v
+                  end
       end
     end
 
     def complete_defaults
-      if default_store && default_store.can_forward? && (default_store.forward! rescue false)
-        default_store.forward!.figures.reject { |l| respond_to?(l) }.each do |l|
-          self.class.send :define_method, l, -> { default_store.forward![l] }
-        end
+      return unless default_store && default_store.can_forward? && begin
+        default_store.forward!
+      rescue StandardError
+        false
+      end
+
+      default_store.forward!.figures.reject { |l| respond_to?(l) }.each do |l|
+        self.class.send :define_method, l, -> { default_store.forward![l] }
       end
     end
 
@@ -49,7 +54,11 @@ class Figure < Hash
     private
 
     def default_store
-      @default_store ||= self.class.ancestors[1].instance rescue nil
+      @default_store ||= begin
+        self.class.ancestors[1].instance
+      rescue StandardError
+        nil
+      end
     end
 
     def custom_fetch(kls)

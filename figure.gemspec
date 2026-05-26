@@ -1,7 +1,6 @@
-# encoding: utf-8
 # frozen_string_literal: true
 
-$:.unshift File.expand_path('../lib', __FILE__)
+$:.unshift File.expand_path('lib', __dir__)
 require 'figure/version'
 
 Gem::Specification.new do |gem|

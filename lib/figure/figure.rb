@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'singleton'
 require 'yaml'
 
@@ -51,8 +52,8 @@ class Figure < Hash
     end
   end
 
-  CONFIG_GLOBS = %w|**/*figure.yml **/figure/*.yml **/gaston/*.yml|
-  CONFIG_GLOBS.concat CONFIG_GLOBS.map { |glob| glob + '.erb' } if Figure.erb_support?
+  CONFIG_GLOBS = %w[**/*figure.yml **/figure/*.yml **/gaston/*.yml]
+  CONFIG_GLOBS.concat(CONFIG_GLOBS.map { |glob| glob + '.erb' }) if Figure.erb_support?
 
   def initialize
     self.class.initializers.each &:initialize!
@@ -67,7 +68,7 @@ class Figure < Hash
   end
 
   def []=(k, v)
-    super.tap do |value|
+    super.tap do |_value|
       self.class.define_singleton_method k.to_sym do
         instance.send k
       end
@@ -86,7 +87,7 @@ class Figure < Hash
   private
 
   def config_directories
-    @config_directories ||= [ ascend_path ]
+    @config_directories ||= [ascend_path]
   end
 
   def all_config_directories_globs
