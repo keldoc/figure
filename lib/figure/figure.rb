@@ -2,9 +2,7 @@ require 'singleton'
 require 'yaml'
 
 class Figure < Hash
-
   class Conf < Pathname
-
     def read
       erb? ? ERB.new(super).result : super
     end
@@ -12,7 +10,6 @@ class Figure < Hash
     def erb?
       Figure.erb_support? && extname == '.erb'
     end
-
   end
 
   include Singleton
@@ -21,7 +18,6 @@ class Figure < Hash
   include Store
 
   class << self
-
     attr_accessor :env
 
     def initializers
@@ -52,7 +48,6 @@ class Figure < Hash
         send m
       end
     end
-
   end
 
   CONFIG_GLOBS = %w|**/*figure.yml **/figure/*.yml **/gaston/*.yml|
@@ -107,5 +102,4 @@ class Figure < Hash
       @config_directories << path if path.join('figure.yml').exist?
     end
   end
-
 end

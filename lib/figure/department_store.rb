@@ -1,5 +1,4 @@
 class Figure < Hash
-
   module DepartmentStore
 
     private
@@ -24,5 +23,4 @@ class Figure < Hash
     end
 
   end
-
 end

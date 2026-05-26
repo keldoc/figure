@@ -1,16 +1,13 @@
 require 'singleton'
 
 class Figure < Hash
-
   class Figurine < Hash
-
     include Singleton
 
     include DepartmentStore
     include Store
 
     class << self
-
       attr_accessor :with_data, :label
 
       def default_type
@@ -28,7 +25,6 @@ class Figure < Hash
           end
         end
       end
-
     end
 
     def initialize
@@ -68,6 +64,5 @@ class Figure < Hash
     def responders
       Figure.responders.dup.concat [self, self.class, Figure]
     end
-
   end
 end

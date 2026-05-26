@@ -1,3 +1,8 @@
 source 'https://rubygems.org'
 
 gemspec
+
+group :test, :development do
+  gem 'rspec', '~> 3.13.2'
+  gem 'rubocop', '~> 1.86.2'
+end

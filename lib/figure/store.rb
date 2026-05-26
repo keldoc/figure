@@ -1,34 +1,29 @@
 class Figure < Hash
-
   module Store
 
-    def []=(k, v)
-      self.class.send :define_method, k, -> { custom_fetch k } unless respond_to? k
+    def []=(kls, val)
+      self.class.send :define_method, kls, -> { custom_fetch kls } unless respond_to? kls
       super
     end
 
-    def default(k=nil)
-      if k && !default_store.has_key?(k) && can_forward?
+    def default(kls=nil)
+      if kls && !default_store.has_key?(kls) && can_forward?
         self[:default]
-
-      elsif default_store && k
-        default_store[k]
-
+      elsif default_store && kls
+        default_store[kls]
       elsif has_key? :default
         self[:default]
       end
     end
 
-    def merge!(h)
-      h.each do |k, v|
+    def merge!(hash)
+      hash.each do |k, v|
         self[k] = if v.is_a? Hash
           new_store k, v, self.class
-
         elsif v.is_a? Array
           v.map do |i|
             i.is_a?(Hash) ? new_store(k, i, self.class) : i
           end
-
         else
           v
         end
@@ -57,15 +52,14 @@ class Figure < Hash
       @default_store ||= self.class.ancestors[1].instance rescue nil
     end
 
-    def custom_fetch(k)
-      if self[k].respond_to?(:can_forward?) && self[k].can_forward?
-        self[k].forward!
+    def custom_fetch(kls)
+      if self[kls].respond_to?(:can_forward?) && self[kls].can_forward?
+        self[kls].forward!
 
       else
-        self[k]
+        self[kls]
       end
     end
 
   end
-
 end
