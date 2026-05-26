@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'figure/store'
 require 'figure/department_store'
 require 'figure/figurine'

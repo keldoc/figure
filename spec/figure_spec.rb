@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'spec_helper'
 
 describe Figure do
@@ -18,9 +19,9 @@ describe Figure do
     end
 
     context 'gaston' do
-      before {
+      before do
         Figure.env = 'production'
-      }
+      end
 
       it 'should find Gaston files to parse and get config from them' do
         expect(described_class.gaston.is_parsed).to eq('production')
@@ -66,9 +67,9 @@ describe Figure do
       expect(described_class.plop.much.more.nested.defined.other_value).to eq('other_value')
     end
 
-    after {
+    after do
       described_class.plop.much.more.nested.defined[:value] = 'value'
-    }
+    end
   end
 
   describe 'forward' do
@@ -77,10 +78,10 @@ describe Figure do
         context "#{k} bim" do
           let(:klass) { described_class.clone }
 
-          before {
-            bim = Class.new { |c| c.send :define_method, :bim, ->{k} }
+          before do
+            bim = Class.new { |c| c.send :define_method, :bim, ->{ k } }
             Figure.responders << bim.new
-          }
+          end
 
           it 'find the correct values taking plip value into account' do
             expect(klass.plop.yet_another.context.name).to eq(v)
@@ -96,9 +97,9 @@ describe Figure do
         context "#{k} blip" do
           let(:klass) { described_class.clone }
 
-          before {
-            Figure::Figurine.send :define_singleton_method, :blip, -> {k}
-          }
+          before do
+            Figure::Figurine.send :define_singleton_method, :blip, -> { k }
+          end
 
           it 'find the correct values taking blip value into account' do
             expect(klass.plop.other.context.name).to eq(v)
@@ -119,11 +120,11 @@ describe Figure do
         end
 
         context "#{env} environment" do
-          before {
+          before do
             described_class.configure do |config|
               config.env = env
             end
-          }
+          end
 
           it 'should return the right value environment aware' do
             expect(klass.environments.this.env.val).to eq(values[:val])
@@ -132,11 +133,11 @@ describe Figure do
             expect(klass.environments.that.nested_env.other_nested_val).to eq('other_default_nested_val')
           end
 
-          after {
+          after do
             described_class.configure do |config|
               config.env = nil
             end
-          }
+          end
         end
       end
     end
@@ -150,11 +151,11 @@ describe Figure do
     end
 
     context 'default env' do
-      before {
+      before do
         Figure.configure do |fig|
           fig.env = :development
         end
-      }
+      end
 
       it 'provides configuration as Gaston did' do
         expect(klass.is_parsed).to eq(true)
@@ -165,11 +166,11 @@ describe Figure do
     end
 
     context 'production provided by Figure' do
-      before {
+      before do
         Figure.configure do |fig|
           fig.env = :production
         end
-      }
+      end
 
       it 'provides configuration as Gaston did' do
         expect(klass.is_parsed).to eq('production')
@@ -180,7 +181,7 @@ describe Figure do
     end
 
     context 'production provided by Rails' do
-      before {
+      before do
         class Rails
           class << self
             attr_accessor :env
@@ -192,7 +193,7 @@ describe Figure do
 
         FileUtils.symlink 'fixtures', 'spec/config'
         Figure::RailsInitializer.initialize!
-      }
+      end
 
       it 'provides configuration as Gaston did' do
         expect(klass.is_parsed).to eq('production')
@@ -202,18 +203,18 @@ describe Figure do
       end
     end
 
-    after {
+    after do
       Figure.configure do |fig|
         fig.env = nil
       end
 
       FileUtils.rm_f 'spec/config'
       Figure.responders.delete Rails if defined? Rails
-    }
+    end
   end
 
   describe 'Rails' do
-    before {
+    before do
       class Rails
         class << self
           attr_accessor :env
@@ -225,7 +226,7 @@ describe Figure do
 
       FileUtils.symlink 'fixtures', 'spec/config'
       Figure::RailsInitializer.initialize!
-    }
+    end
 
     let(:figure) { Figure.clone }
     let(:gaston) { Gaston.clone }
@@ -252,13 +253,13 @@ describe Figure do
       expect(figure.plop.much.more.nested.inherited.value).to eq(figure.plop.default.more.nested.inherited.value)
     end
 
-    after {
+    after do
       Figure.responders.delete Rails if defined? ::Rails
       Object.send :remove_const, :Rails if defined? ::Rails
 
       FileUtils.rm_f 'spec/config'
       FileUtils.rm_f 'spec/fixtures/fixtures'
-    }
+    end
   end
 
   describe 'ERB' do

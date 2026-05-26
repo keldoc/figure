@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'singleton'
 
 class Figure < Hash
@@ -58,7 +59,7 @@ class Figure < Hash
     end
 
     def responder
-      responders.detect { |s| s.respond_to?(@forward) && s.send(@forward)}
+      responders.detect { |s| s.respond_to?(@forward) && s.send(@forward) }
     end
 
     def responders
