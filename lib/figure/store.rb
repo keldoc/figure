@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 class Figure < Hash
   module Store
-
     def []=(kls, val)
       self.class.send :define_method, kls, -> { custom_fetch kls } unless respond_to? kls
       super
@@ -61,6 +60,5 @@ class Figure < Hash
         self[kls]
       end
     end
-
   end
 end

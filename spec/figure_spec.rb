@@ -5,13 +5,13 @@ describe Figure do
 
   describe 'method missing' do
     it 'should otherwise respond to method_missing the usual way' do
-      expect{ described_class.plip }.to raise_error(NoMethodError)
+      expect { described_class.plip }.to raise_error(NoMethodError)
     end
   end
 
   describe 'find config' do
     it 'should not parse a random file in config directory' do
-      expect{ described_class.other_config }.to raise_error(NoMethodError)
+      expect { described_class.other_config }.to raise_error(NoMethodError)
     end
 
     it 'should find files to parse and get config from them' do
@@ -79,7 +79,7 @@ describe Figure do
           let(:klass) { described_class.clone }
 
           before do
-            bim = Class.new { |c| c.send :define_method, :bim, ->{ k } }
+            bim = Class.new { |c| c.send :define_method, :bim, -> { k } }
             Figure.responders << bim.new
           end
 

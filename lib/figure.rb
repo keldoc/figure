@@ -40,7 +40,7 @@ end
 
 erb_support = !!defined?(ERB)
 
-Figure.define_singleton_method :erb_support?, ->{ erb_support }
+Figure.define_singleton_method :erb_support?, -> { erb_support }
 
 require 'figure/figure'
 
