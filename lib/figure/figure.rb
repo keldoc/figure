@@ -75,7 +75,7 @@ class Figure < Hash
   end
 
   def config_files
-    Dir[ *all_config_directories_globs ].map do |file|
+    Dir[*all_config_directories_globs].map do |file|
       conf = Conf.new file
       name = conf.basename.to_s.sub('.yml', '').sub('.figure', '').sub('.erb', '')
 

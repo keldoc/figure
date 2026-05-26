@@ -38,7 +38,7 @@ class Figure < Hash
     end
 
     def forward!
-      self[ has_key? forward_response ]
+      self[has_key? forward_response]
     end
 
     def can_forward?

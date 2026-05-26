@@ -6,7 +6,7 @@ class Figure < Hash
       super
     end
 
-    def default(kls=nil)
+    def default(kls = nil)
       if kls && !default_store.has_key?(kls) && can_forward?
         self[:default]
       elsif default_store && kls
