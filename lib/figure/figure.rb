@@ -67,10 +67,10 @@ class Figure < Hash
     end
   end
 
-  def []=(kls, val)
+  def []=(klass, val)
     super.tap do |_value|
-      self.class.define_singleton_method kls.to_sym do
-        instance.send kls
+      self.class.define_singleton_method klass.to_sym do
+        instance.send klass
       end
     end
   end

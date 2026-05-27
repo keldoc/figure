@@ -4,8 +4,8 @@ class Figure < Hash
   module DepartmentStore
     private
 
-    def new_store(kls, val = {}, parent_klass = Figure::Figurine)
-      store_klass(parent_klass, kls.to_s.capitalize).with(data: val).instance
+    def new_store(klass, val = {}, parent_klass = Figure::Figurine)
+      store_klass(parent_klass, klass.to_s.capitalize).with(data: val).instance
     end
 
     def store_klass(parent_klass, name)

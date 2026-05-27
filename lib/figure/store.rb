@@ -2,16 +2,16 @@
 
 class Figure < Hash
   module Store
-    def []=(kls, val)
-      self.class.send :define_method, kls, -> { custom_fetch kls } unless respond_to? kls
+    def []=(klass, val)
+      self.class.send :define_method, klass, -> { custom_fetch klass } unless respond_to? klass
       super
     end
 
-    def default(kls = nil)
-      if kls && !default_store.has_key?(kls) && can_forward? # rubocop:disable Style/PreferredHashMethods
+    def default(klass = nil)
+      if klass && !default_store.has_key?(klass) && can_forward? # rubocop:disable Style/PreferredHashMethods
         self[:default]
-      elsif default_store && kls
-        default_store[kls]
+      elsif default_store && klass
+        default_store[klass]
       elsif has_key? :default # rubocop:disable Style/PreferredHashMethods
         self[:default]
       end
@@ -32,15 +32,18 @@ class Figure < Hash
     end
 
     def complete_defaults
-      return unless default_store&.can_forward? && begin
-        default_store.forward!
-      rescue StandardError
-        false
-      end
+      return unless default_store&.can_forward?
 
-      default_store.forward!.figures.reject { |l| respond_to?(l) }.each do |l|
-        self.class.send :define_method, l, -> { default_store.forward![l] }
+      forwarded_store = default_store.forward!
+      return unless forwarded_store
+
+      forwarded_store.figures.reject { |figure| respond_to?(figure) }.each do |figure|
+        self.class.send(:define_method, figure) do
+          default_store.forward![figure]
+        end
       end
+    rescue StandardError
+      false
     end
 
     def has_key?(key) # rubocop:disable Naming/PredicatePrefix
@@ -61,12 +64,12 @@ class Figure < Hash
       end
     end
 
-    def custom_fetch(kls)
-      if self[kls].respond_to?(:can_forward?) && self[kls].can_forward?
-        self[kls].forward!
+    def custom_fetch(klass)
+      if self[klass].respond_to?(:can_forward?) && self[klass].can_forward?
+        self[klass].forward!
 
       else
-        self[kls]
+        self[klass]
       end
     end
   end
