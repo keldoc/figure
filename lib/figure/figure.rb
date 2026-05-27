@@ -1,10 +1,10 @@
+# frozen_string_literal: true
+
 require 'singleton'
 require 'yaml'
 
 class Figure < Hash
-
   class Conf < Pathname
-
     def read
       erb? ? ERB.new(super).result : super
     end
@@ -12,7 +12,6 @@ class Figure < Hash
     def erb?
       Figure.erb_support? && extname == '.erb'
     end
-
   end
 
   include Singleton
@@ -21,7 +20,6 @@ class Figure < Hash
   include Store
 
   class << self
-
     attr_accessor :env
 
     def initializers
@@ -44,21 +42,20 @@ class Figure < Hash
       yield self
     end
 
-    def method_missing(*args, m)
+    def method_missing(*args, mes) # rubocop:disable Style/MissingRespondToMissing
       if @instantiated
         super
       else
         @instantiated = instance
-        send m
+        send mes
       end
     end
-
   end
 
-  CONFIG_GLOBS = %w|**/*figure.yml **/figure/*.yml **/gaston/*.yml|
-  CONFIG_GLOBS.concat CONFIG_GLOBS.map { |glob| glob + '.erb' } if Figure.erb_support?
+  CONFIG_GLOBS = %w[**/*figure.yml **/figure/*.yml **/gaston/*.yml] # rubocop:disable Style/MutableConstant
+  CONFIG_GLOBS.concat(CONFIG_GLOBS.map { |glob| "#{glob}.erb" }) if Figure.erb_support?
 
-  def initialize
+  def initialize # rubocop:disable Lint/MissingSuper
     self.class.initializers.each &:initialize!
     @config_directories = self.class.config_directories.map { |path| Pathname.new path }
     store!
@@ -70,16 +67,16 @@ class Figure < Hash
     end
   end
 
-  def []=(k, v)
-    super.tap do |value|
-      self.class.define_singleton_method k.to_sym do
-        instance.send k
+  def []=(klass, val)
+    super.tap do |_value|
+      self.class.define_singleton_method klass.to_sym do
+        instance.send klass
       end
     end
   end
 
   def config_files
-    Dir[ *all_config_directories_globs ].map do |file|
+    Dir[*all_config_directories_globs].map do |file|
       conf = Conf.new file
       name = conf.basename.to_s.sub('.yml', '').sub('.figure', '').sub('.erb', '')
 
@@ -90,7 +87,7 @@ class Figure < Hash
   private
 
   def config_directories
-    @config_directories ||= [ ascend_path ]
+    @config_directories ||= [ascend_path]
   end
 
   def all_config_directories_globs
@@ -107,5 +104,4 @@ class Figure < Hash
       @config_directories << path if path.join('figure.yml').exist?
     end
   end
-
 end

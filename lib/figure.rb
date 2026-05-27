@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'figure/store'
 require 'figure/department_store'
 require 'figure/figurine'
@@ -7,16 +9,17 @@ class Figure < Hash
     def self.initialize!
       gaston = Class.new do
         class << self
-          def method_missing(*args, m)
-            if root = telephon_is_a_ringin(m)
-              Figure.send(root).send(m)
+          def method_missing(*args, mes) # rubocop:disable Style/MissingRespondToMissing
+            root = telephon_is_a_ringin(mes)
+            if root
+              Figure.send(root).send(mes)
             else
               super
             end
           end
 
-          def telephon_is_a_ringin(m)
-            Figure.instance.keys.detect { |root| Figure.send(root).respond_to? m }
+          def telephon_is_a_ringin(mes)
+            Figure.instance.keys.detect { |root| Figure.send(root).respond_to? mes }
           end
         end
       end
@@ -37,12 +40,10 @@ class Figure < Hash
   end
 end
 
-erb_support = !!defined?(ERB)
+erb_support = defined?(ERB) ? true : false
 
-Figure.define_singleton_method :erb_support?, ->{ erb_support }
+Figure.define_singleton_method :erb_support?, -> { erb_support }
 
 require 'figure/figure'
 
-if defined? Rails
-  Figure.initializers << Figure::RailsInitializer
-end
+Figure.initializers << Figure::RailsInitializer if defined? Rails
