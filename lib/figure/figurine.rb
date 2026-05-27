@@ -29,7 +29,7 @@ class Figure < Hash
       end
     end
 
-    def initialize
+    def initialize # rubocop:disable Lint/MissingSuper
       h = self.class.with_data || {}
       default_h, @forward = find_default h
 
@@ -39,7 +39,7 @@ class Figure < Hash
     end
 
     def forward!
-      self[has_key? forward_response]
+      self[has_key? forward_response] # rubocop:disable Style/PreferredHashMethods
     end
 
     def can_forward?
@@ -48,11 +48,15 @@ class Figure < Hash
 
     private
 
-    def find_default(h)
-      key = h.keys.detect { |k| k.to_s =~ /^(default|gaston)(_.+)?$/ }
-      forward = ::Regexp.last_match(1).to_s == 'gaston' ? 'env' : (::Regexp.last_match(2) && ::Regexp.last_match(2)[1..-1])
+    def find_default(hash)
+      key = hash.keys.detect { |k| k.to_s =~ /^(default|gaston)(_.+)?$/ }
+      forward = if ::Regexp.last_match(1).to_s == 'gaston'
+                  'env'
+                else
+                  ::Regexp.last_match(2) && ::Regexp.last_match(2)[1..]
+                end
 
-      [h.delete(key), forward]
+      [hash.delete(key), forward]
     end
 
     def forward_response

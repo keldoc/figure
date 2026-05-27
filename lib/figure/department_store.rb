@@ -4,12 +4,12 @@ class Figure < Hash
   module DepartmentStore
     private
 
-    def new_store(k, v = {}, parent_klass = Figure::Figurine)
-      store_klass(parent_klass, k.to_s.capitalize).with(data: v).instance
+    def new_store(kls, val = {}, parent_klass = Figure::Figurine)
+      store_klass(parent_klass, kls.to_s.capitalize).with(data: val).instance
     end
 
     def store_klass(parent_klass, name)
-      label = parent_klass.label.to_s + '::' + name
+      label = "#{parent_klass.label}::#{name}"
 
       Class.new(default_klass(label) || parent_klass).tap do |klass|
         klass.label = label

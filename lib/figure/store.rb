@@ -8,11 +8,11 @@ class Figure < Hash
     end
 
     def default(kls = nil)
-      if kls && !default_store.has_key?(kls) && can_forward?
+      if kls && !default_store.has_key?(kls) && can_forward? # rubocop:disable Style/PreferredHashMethods
         self[:default]
       elsif default_store && kls
         default_store[kls]
-      elsif has_key? :default
+      elsif has_key? :default # rubocop:disable Style/PreferredHashMethods
         self[:default]
       end
     end
@@ -32,7 +32,7 @@ class Figure < Hash
     end
 
     def complete_defaults
-      return unless default_store && default_store.can_forward? && begin
+      return unless default_store&.can_forward? && begin
         default_store.forward!
       rescue StandardError
         false
@@ -43,7 +43,7 @@ class Figure < Hash
       end
     end
 
-    def has_key?(key)
+    def has_key?(key) # rubocop:disable Naming/PredicatePrefix
       [key.to_s, key.to_sym].detect { |k| super(k) }
     end
 

@@ -42,20 +42,20 @@ class Figure < Hash
       yield self
     end
 
-    def method_missing(*args, m)
+    def method_missing(*args, mes) # rubocop:disable Style/MissingRespondToMissing
       if @instantiated
         super
       else
         @instantiated = instance
-        send m
+        send mes
       end
     end
   end
 
-  CONFIG_GLOBS = %w[**/*figure.yml **/figure/*.yml **/gaston/*.yml]
-  CONFIG_GLOBS.concat(CONFIG_GLOBS.map { |glob| glob + '.erb' }) if Figure.erb_support?
+  CONFIG_GLOBS = %w[**/*figure.yml **/figure/*.yml **/gaston/*.yml] # rubocop:disable Style/MutableConstant
+  CONFIG_GLOBS.concat(CONFIG_GLOBS.map { |glob| "#{glob}.erb" }) if Figure.erb_support?
 
-  def initialize
+  def initialize # rubocop:disable Lint/MissingSuper
     self.class.initializers.each &:initialize!
     @config_directories = self.class.config_directories.map { |path| Pathname.new path }
     store!
@@ -67,10 +67,10 @@ class Figure < Hash
     end
   end
 
-  def []=(k, v)
+  def []=(kls, val)
     super.tap do |_value|
-      self.class.define_singleton_method k.to_sym do
-        instance.send k
+      self.class.define_singleton_method kls.to_sym do
+        instance.send kls
       end
     end
   end

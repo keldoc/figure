@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'fileutils'
 
 describe Figure do
   describe 'method missing' do
@@ -50,7 +51,8 @@ describe Figure do
     it 'should find defaults for much more nested values' do
       expect(described_class.plop.default.more.nested.inherited.value).to eq('inherited')
       expect(described_class.plop.much.more.nested.defined.value).to eq('value')
-      expect(described_class.plop.much.more.nested.inherited.value).to eq(described_class.plop.default.more.nested.inherited.value)
+      expect(described_class.plop.much.more.nested.inherited.value)
+        .to eq(described_class.plop.default.more.nested.inherited.value)
     end
   end
 
@@ -185,7 +187,7 @@ describe Figure do
 
     context 'production provided by Rails' do
       before do
-        class Rails
+        class Rails # rubocop:disable Lint/ConstantDefinitionInBlock
           class << self
             attr_accessor :env
 
@@ -219,7 +221,7 @@ describe Figure do
 
   describe 'Rails' do
     before do
-      class Rails
+      class Rails # rubocop:disable Lint/ConstantDefinitionInBlock
         class << self
           attr_accessor :env
 
